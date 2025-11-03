@@ -1,0 +1,36 @@
+# Environment files
+.env
+.env.backup
+.env.production
+/auth.json
+
+# Laravel specific
+/vendor
+/composer.lock
+/storage
+/public/storage
+/public/build
+/public/hot
+/.phpunit.cache
+.phpactor.json
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+/.nova
+/.fleet
+/bootstrap/cache
+
+# Frontend / Node
+/node_modules
+/frontend/node_modules
+/frontend/package-lock.json
+
+# IDE / Editor files
+/.idea
+/.vscode
+/.zed
+
+# System / OS files
+.DS_Store
+Thumbs.db
+*.log

@@ -1,0 +1,43 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Node
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Composer
+vendor
+
+# Laravel
+.env
+.env.backup
+.env.production
+storage/logs
+storage/framework/cache
+storage/framework/sessions
+storage/framework/views
+
+# Tests
+.phpunit.result.cache
+phpunit.xml
+
+# CI/CD
+.github
+
+# Documentation
+README.md
+CHANGELOG.md
+.styleci.yml
+.editorconfig
+
+# Frontend
+frontend

@@ -1,0 +1,65 @@
+services:
+  backend:
+    container_name: acme_backend_dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      # Variables for Laravel
+      APP_ENV: local
+      APP_DEBUG: 'true'
+      APP_KEY: ${APP_KEY}
+      # Connexion to PostgreSQL
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./:/var/www/html
+      - backend_vendor:/var/www/html/vendor
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - acme_network
+    command: >
+      sh -c "composer install &&
+             php artisan migrate --force &&
+             php artisan serve --host=0.0.0.0 --port=8000"
+
+  db:
+    image: postgres:15
+    container_name: acme_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - acme_network
+
+  frontend:
+    container_name: acme_frontend_dev
+    image: node:20-alpine
+    working_dir: /app
+    environment:
+      NODE_ENV: development
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "5173:5173"
+    networks:
+      - acme_network
+    command: sh -c "npm install && npm run dev -- --host"
+
+volumes:
+  db_data:
+  backend_vendor:
+
+networks:
+  acme_network:

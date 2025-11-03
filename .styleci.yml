@@ -1,0 +1,11 @@
+php:
+  preset: laravel
+  enabled:
+    - concat_with_space
+    - lowercase_constants
+    - no_trailing_whitespace_in_blank_line
+  disabled:
+    - no_unused_imports
+  finder:
+    not-name:
+      - index.php
