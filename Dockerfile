@@ -18,10 +18,23 @@ RUN npm run build
 # Stage 2: Backend PHP with Apache
 FROM php:8.3-apache
 
-# Install PHP extensions required for Laravel + PostgreSQL
+# Install system dependencies and PHP extensions required for Laravel
 RUN apt-get update && apt-get install -y \
-    libpq-dev zip unzip git curl \
-    && docker-php-ext-install pdo pdo_pgsql \
+    libpq-dev \
+    libzip-dev \
+    libpng-dev \
+    libonig-dev \
+    zip \
+    unzip \
+    git \
+    curl \
+    && docker-php-ext-install \
+        pdo \
+        pdo_pgsql \
+        mbstring \
+        zip \
+        bcmath \
+        gd \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Enable mod_rewrite for Apache
@@ -33,14 +46,25 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy backend source code
-COPY --chown=www-data:www-data . .
+# Copy composer files first for better caching
+COPY composer.json composer.lock ./
+
+# Install PHP dependencies (as root, no permission issues)
+RUN composer install \
+    --no-dev \
+    --no-scripts \
+    --no-autoloader \
+    --prefer-dist \
+    --no-interaction
+
+# Copy backend source code (without chown, we're root)
+COPY . .
 
 # Configure git to avoid ownership issues
 RUN git config --global --add safe.directory /var/www/html
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Generate optimized autoloader now that all files are present
+RUN composer dump-autoload --optimize --no-dev
 
 # Create necessary directories and set permissions
 RUN mkdir -p storage/framework/{sessions,views,cache} \
@@ -49,8 +73,11 @@ RUN mkdir -p storage/framework/{sessions,views,cache} \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
-# Copy frontend build to public (preserving Laravel's index.php)
-COPY --from=frontend-builder --chown=www-data:www-data /app/dist /var/www/html/public
+# Copy frontend build to public (after Laravel files are in place)
+# This copies dist/* into public/, merging with existing files
+RUN mkdir -p /tmp/frontend-build
+COPY --from=frontend-builder /app/dist /tmp/frontend-build
+RUN cp -r /tmp/frontend-build/* /var/www/html/public/ && rm -rf /tmp/frontend-build
 
 # Configure Apache for Laravel API + Vue SPA
 RUN echo '<VirtualHost *:80>\n\
@@ -77,6 +104,11 @@ RewriteRule ^ index.php [L]\n\
 RewriteCond %{REQUEST_FILENAME} !-f\n\
 RewriteCond %{REQUEST_FILENAME} !-d\n\
 RewriteRule ^ index.html [L]' > /var/www/html/public/.htaccess
+
+# Set final permissions for Apache
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Expose port 80
 EXPOSE 80
