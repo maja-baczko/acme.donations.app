@@ -63,14 +63,16 @@ COPY . .
 # Configure git to avoid ownership issues
 RUN git config --global --add safe.directory /var/www/html
 
-# Generate optimized autoloader now that all files are present
-RUN composer dump-autoload --optimize --no-dev
-
-# Create necessary directories and set permissions
+# Create necessary directories BEFORE composer dump-autoload
 RUN mkdir -p storage/framework/{sessions,views,cache} \
     && mkdir -p storage/logs \
-    && mkdir -p bootstrap/cache \
-    && chown -R www-data:www-data storage bootstrap/cache \
+    && mkdir -p bootstrap/cache
+
+# Generate optimized autoloader (Laravel needs bootstrap/cache to exist)
+RUN composer dump-autoload --optimize --no-dev
+
+# Set permissions for Laravel directories
+RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
 # Copy frontend build to public (after Laravel files are in place)
@@ -105,7 +107,11 @@ RewriteCond %{REQUEST_FILENAME} !-f\n\
 RewriteCond %{REQUEST_FILENAME} !-d\n\
 RewriteRule ^ index.html [L]' > /var/www/html/public/.htaccess
 
-# Set final permissions for Apache
+# Copy and setup entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Set final permissions for Apache (base permissions)
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
@@ -113,9 +119,5 @@ RUN chown -R www-data:www-data /var/www/html \
 # Expose port 80
 EXPOSE 80
 
-# Startup script
-CMD php artisan migrate --force && \
-    php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache && \
-    apache2-foreground
+# Use entrypoint script instead of direct CMD
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
