@@ -4,10 +4,10 @@ FROM node:20-alpine AS frontend-builder
 WORKDIR /app
 
 # Copy frontend package files
-COPY frontend/package*.json ./
+COPY frontend/package.json frontend/package-lock.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm ci --prefer-offline --no-audit
 
 # Copy frontend source code
 COPY frontend/ ./

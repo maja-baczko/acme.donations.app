@@ -5,7 +5,6 @@
 
 # Laravel specific
 /vendor
-/composer.lock
 /storage
 /public/storage
 /public/build
@@ -22,7 +21,6 @@ Homestead.yaml
 # Frontend / Node
 /node_modules
 /frontend/node_modules
-/frontend/package-lock.json
 
 # IDE / Editor files
 /.idea
