@@ -3,13 +3,13 @@ services:
     container_name: acme_backend_dev
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     environment:
-      # Variables for Laravel
+      # Laravel environment variables
       APP_ENV: local
       APP_DEBUG: 'true'
       APP_KEY: ${APP_KEY}
-      # Connexion to PostgreSQL
+      # PostgreSQL connection
       DB_CONNECTION: pgsql
       DB_HOST: db
       DB_PORT: 5432

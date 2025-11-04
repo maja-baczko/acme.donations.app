@@ -1,0 +1,26 @@
+# Dockerfile for local development (without frontend build)
+FROM php:8.3-apache
+
+# Install PHP extensions required for Laravel + PostgreSQL
+RUN apt-get update && apt-get install -y \
+    libpq-dev zip unzip git curl \
+    && docker-php-ext-install pdo pdo_pgsql \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Enable mod_rewrite for Apache
+RUN a2enmod rewrite
+
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Configure git to avoid ownership issues
+RUN git config --global --add safe.directory /var/www/html
+
+# Configure Apache for Laravel (dev mode with php artisan serve)
+# No Apache config needed as we use php artisan serve
+
+# Expose port 8000
+EXPOSE 8000
