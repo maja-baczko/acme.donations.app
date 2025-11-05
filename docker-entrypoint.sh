@@ -22,7 +22,7 @@ php artisan migrate --force
 echo "⚡ Caching Laravel configuration..."
 php artisan config:cache
 php artisan route:cache
-php artisan view:cache
+# Skip view:cache - using Vue.js SPA frontend, no Blade views
 
 echo "✅ Initialization complete!"
 
