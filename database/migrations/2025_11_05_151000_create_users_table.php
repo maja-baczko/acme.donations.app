@@ -1,25 +1,26 @@
 <?php
 
+use App\Modules\Media\Models\Image;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+return new class extends Migration {
+	public function up(): void {
+		Schema::create('users', function (Blueprint $table) {
+			$table->id();
+			$table->string('firstname');
+			$table->string('lastname');
+			$table->string('email')->unique();
+			$table->timestamp('email_verified_at')->nullable();
+			$table->string('password');
             $table->rememberToken();
-            $table->timestamps();
-        });
+			$table->string('department')->nullable();
+			$table->string('function')->nullable();
+			$table->boolean('still_working')->default(true);
+			$table->foreignIdFor(Image::class, 'profile')->nullable();
+			$table->timestamps();
+		});
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
@@ -35,15 +36,11 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
-    }
+	}
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('users');
+	public function down(): void {
+		Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
-    }
+	}
 };

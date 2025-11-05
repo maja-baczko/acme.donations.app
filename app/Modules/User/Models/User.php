@@ -12,6 +12,14 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable {
     use HasFactory, Notifiable, HasRoles;
 
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory()
+    {
+        return \Database\Factories\UserFactory::new();
+    }
+
     protected $fillable = [
         'firstname',
         'lastname',
