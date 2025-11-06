@@ -6,9 +6,7 @@ use App\Modules\Campaign\Models\Category;
 use Illuminate\Database\Seeder;
 
 class CategorySeeder extends Seeder {
-    /**
-     * Run the database seeds.
-     */
+    // Run the database seeds
     public function run(): void {
         $categories = [
             [

@@ -4,12 +4,18 @@ namespace App\Modules\Payment\Models;
 
 use App\Modules\Donation\Models\Donation;
 use App\Modules\User\Models\User;
+use Database\Factories\PaymentFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Payment extends Model {
     use HasFactory;
+
+    // Create a new factory instance for the model
+    protected static function newFactory(): PaymentFactory {
+        return PaymentFactory::new();
+    }
 
     protected $fillable = [
         'donation_id',

@@ -3,6 +3,7 @@
 namespace App\Modules\User\Models;
 
 use App\Modules\Media\Models\Image;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -12,11 +13,9 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable {
     use HasFactory, HasRoles, Notifiable;
 
-    /**
-     * Create a new factory instance for the model.
-     */
-    protected static function newFactory() {
-        return \Database\Factories\UserFactory::new();
+    // Create a new factory instance for the model
+    protected static function newFactory(): UserFactory {
+        return UserFactory::new();
     }
 
     protected $fillable = [

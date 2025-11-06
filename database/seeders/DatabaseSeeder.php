@@ -9,10 +9,9 @@ use Illuminate\Database\Seeder;
 class DatabaseSeeder extends Seeder {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
+    // Seed the application's database
     public function run(): void {
+
         // Seed permissions and roles first
         $this->call([
             PermissionSeeder::class,
@@ -71,5 +70,25 @@ class DatabaseSeeder extends Seeder {
         if (! $employee->hasRole('employee')) {
             $employee->assignRole('employee');
         }
+
+        // Seed additional random users using factory
+        $this->call([
+            UserSeeder::class,
+        ]);
+
+        // Seed campaigns (requires users and categories)
+        $this->call([
+            CampaignSeeder::class,
+        ]);
+
+        // Seed donations (requires campaigns and users)
+        $this->call([
+            DonationSeeder::class,
+        ]);
+
+        // Seed audit logs (requires users)
+        $this->call([
+            AuditLogSeeder::class,
+        ]);
     }
 }

@@ -25,4 +25,46 @@ class DonationFactory extends Factory {
             'donor_id' => User::factory(),
         ];
     }
+
+    // Donation is pending while payment is processed
+    public function pending(): static {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'pending',
+        ]);
+    }
+
+    // Donation is completed when payment is approved
+    public function completed(): static {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'completed',
+        ]);
+    }
+
+    // Donation is failed if payment has failed
+    public function failed(): static {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'failed',
+        ]);
+    }
+
+    // Donor wants to stay anonymous
+    public function anonymous(): static {
+        return $this->state(fn (array $attributes) => [
+            'is_anonymous' => true,
+        ]);
+    }
+
+    // Small donation : < under 50
+    public function small(): static {
+        return $this->state(fn (array $attributes) => [
+            'amount' => $this->faker->randomFloat(2, 5, 50),
+        ]);
+    }
+
+    // Large donation : > over 1000
+    public function large(): static {
+        return $this->state(fn (array $attributes) => [
+            'amount' => $this->faker->randomFloat(2, 1000, 10000),
+        ]);
+    }
 }

@@ -3,12 +3,18 @@
 namespace App\Modules\Administration\Models;
 
 use App\Modules\User\Models\User;
+use Database\Factories\AuditLogFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AuditLog extends Model {
     use HasFactory;
+
+    // Create a new factory instance for the model
+    protected static function newFactory(): AuditLogFactory {
+        return AuditLogFactory::new();
+    }
 
     protected $fillable = [
         'user_id',

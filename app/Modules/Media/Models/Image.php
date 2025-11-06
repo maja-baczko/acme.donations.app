@@ -2,11 +2,17 @@
 
 namespace App\Modules\Media\Models;
 
+use Database\Factories\ImageFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Image extends Model {
     use HasFactory;
+
+    // Create a new factory instance for the model
+    protected static function newFactory(): ImageFactory {
+        return ImageFactory::new();
+    }
 
     protected $fillable = [
         'type',

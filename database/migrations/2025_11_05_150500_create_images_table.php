@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('images', function (Blueprint $table) {
             $table->id();
-            $table->string('type');
+            $table->enum('type', ['photo', 'icon', 'profile']);
             $table->string('entity_type');
             $table->string('entity_id');
             $table->text('file_path');

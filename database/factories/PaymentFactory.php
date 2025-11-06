@@ -17,15 +17,29 @@ class PaymentFactory extends Factory {
             'status' => $this->faker->randomElement(['processing', 'completed', 'failed']),
             'gateway' => $this->faker->randomElement(['stripe', 'paypal', 'bank_transfer']),
             'transaction_reference' => $this->faker->unique()->uuid(),
-            'metadata' => json_encode([
-                'payment_intent_id' => 'pi_'.$this->faker->regexify('[A-Za-z0-9]{24}'),
-                'charge_id' => 'ch_'.$this->faker->regexify('[A-Za-z0-9]{24}'),
-            ]),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
 
             'donation_id' => Donation::factory(),
             'user_id' => User::factory(),
         ];
+    }
+
+    public function processing(): static {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'processing',
+        ]);
+    }
+
+    public function completed(): static {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'completed',
+        ]);
+    }
+
+    public function failed(): static {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'failed',
+        ]);
     }
 }

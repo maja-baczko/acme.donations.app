@@ -33,11 +33,11 @@ class UserPolicy {
         return $user->hasPermissionTo('delete users');
     }
 
-    public function restore(User $user, User $model): bool {
+    public function restore(User $user): bool {
         return $user->hasPermissionTo('delete users');
     }
 
-    public function forceDelete(User $user, User $model): bool {
+    public function forceDelete(User $user): bool {
         return $user->hasPermissionTo('delete users');
     }
 }

@@ -11,9 +11,7 @@ use Illuminate\Support\Str;
 class UserFactory extends Factory {
     protected $model = User::class;
 
-    /**
-     * The current password being used by the factory.
-     */
+    // Password being used by the factory
     protected static ?string $password = null;
 
     public function definition(): array {
@@ -30,5 +28,37 @@ class UserFactory extends Factory {
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];
+    }
+
+    // user's email address is unverified
+    public function unverified(): static {
+        return $this->state(fn (array $attributes) => [
+            'email_verified_at' => null,
+        ]);
+    }
+
+    // user no longer works for the company
+    public function inactive(): static {
+        return $this->state(fn (array $attributes) => [
+            'still_working' => false,
+        ]);
+    }
+
+    public function admin(): static {
+        return $this->afterCreating(function (User $user) {
+            $user->assignRole('admin');
+        });
+    }
+
+    public function manager(): static {
+        return $this->afterCreating(function (User $user) {
+            $user->assignRole('manager');
+        });
+    }
+
+    public function employee(): static {
+        return $this->afterCreating(function (User $user) {
+            $user->assignRole('employee');
+        });
     }
 }

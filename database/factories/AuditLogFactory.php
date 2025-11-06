@@ -3,6 +3,9 @@
 namespace Database\Factories;
 
 use App\Modules\Administration\Models\AuditLog;
+use App\Modules\Administration\Models\SystemSetting;
+use App\Modules\Campaign\Models\Campaign;
+use App\Modules\Donation\Models\Donation;
 use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
@@ -17,10 +20,10 @@ class AuditLogFactory extends Factory {
         return [
             'action' => $this->faker->randomElement(['created', 'updated', 'deleted', 'viewed']),
             'entity_type' => $this->faker->randomElement([
-                'App\Modules\Campaign\Models\Campaign',
-                'App\Modules\Donation\Models\Donation',
-                'App\Modules\User\Models\User',
-                'App\Modules\Administration\Models\SystemSetting',
+                Campaign::class,
+                Donation::class,
+                User::class,
+                SystemSetting::class,
             ]),
             'entity_id' => $this->faker->numberBetween(1, 1000),
             'old_value' => json_encode($oldValue),
@@ -32,5 +35,58 @@ class AuditLogFactory extends Factory {
 
             'user_id' => User::factory(),
         ];
+    }
+
+    // Entity was created
+    public function created(): static {
+        return $this->state(fn (array $attributes) => [
+            'action' => 'created',
+            'old_value' => json_encode(null),
+        ]);
+    }
+
+    // Entity was updated
+    public function updated(): static {
+        return $this->state(fn (array $attributes) => [
+            'action' => 'updated',
+        ]);
+    }
+
+    // Entity was deleted
+    public function deleted(): static {
+        return $this->state(fn (array $attributes) => [
+            'action' => 'deleted',
+            'new_value' => json_encode(null),
+        ]);
+    }
+
+    // Entity was viewed
+    public function viewed(): static {
+        return $this->state(fn (array $attributes) => [
+            'action' => 'viewed',
+            'old_value' => json_encode(null),
+            'new_value' => json_encode(null),
+        ]);
+    }
+
+    // Log for Campaign entity
+    public function forCampaign(): static {
+        return $this->state(fn (array $attributes) => [
+            'entity_type' => Campaign::class,
+        ]);
+    }
+
+    // Log for Donation entity
+    public function forDonation(): static {
+        return $this->state(fn (array $attributes) => [
+            'entity_type' => Donation::class,
+        ]);
+    }
+
+    // Log for User entity
+    public function forUser(): static {
+        return $this->state(fn (array $attributes) => [
+            'entity_type' => User::class,
+        ]);
     }
 }
