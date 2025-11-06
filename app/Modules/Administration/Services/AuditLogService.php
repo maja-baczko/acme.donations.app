@@ -49,8 +49,8 @@ class AuditLogService {
         string $action,
         string $entityType,
         int $entityId,
-        array $oldValue = null,
-        array $newValue = null
+        ?array $oldValue = null,
+        ?array $newValue = null
     ): AuditLog {
         return $this->create([
             'user_id' => $user->id,

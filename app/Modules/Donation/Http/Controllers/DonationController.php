@@ -1,4 +1,4 @@
-<?php /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
+<?php
 
 namespace App\Modules\Donation\Http\Controllers;
 
@@ -55,7 +55,7 @@ class DonationController {
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Failed to delete donation',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 422);
         }
     }

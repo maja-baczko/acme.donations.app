@@ -1,4 +1,4 @@
-<?php /** @noinspection ALL */
+<?php
 
 namespace App\Modules\User\Services;
 
@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Throwable;
 
 class UserService {
     /**
@@ -14,8 +15,8 @@ class UserService {
      *
      * @param array $data
      * @return User
-     * @throws \Throwable
-     * @throws \Throwable
+     * @throws Throwable
+     * @throws Throwable
      */
     public function create(array $data): User {
         return DB::transaction(function () use ($data) {
@@ -45,8 +46,8 @@ class UserService {
      * @param User $user
      * @param array $data
      * @return User
-     * @throws \Throwable
-     * @throws \Throwable
+     * @throws Throwable
+     * @throws Throwable
      */
     public function update(User $user, array $data): User {
         return DB::transaction(function () use ($user, $data) {
@@ -77,7 +78,7 @@ class UserService {
      * @param User $user
      * @return bool
      * @throws Exception
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function delete(User $user): bool {
         return DB::transaction(function () use ($user) {
