@@ -1,11 +1,18 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Header from "@/layout/Header.vue";
+import Main from "@/layout/Main.vue";
+import Footer from "@/layout/Footer.vue";
+import LoginView from "@/modules/user/views/LoginView.vue";
+</script>
 
-<template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+<template v-if="!userIsLoggedIn">
+    <LoginView />
+</template>
+
+<template v-else>
+    <Header />
+    <Main />
+    <Footer />
 </template>
 
 <style scoped></style>
