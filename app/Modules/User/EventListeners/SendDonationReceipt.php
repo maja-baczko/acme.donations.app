@@ -1,7 +1,4 @@
-<?php /** @noinspection ALL */
-/** @noinspection ALL */
-
-/** @noinspection ALL */
+<?php
 
 namespace App\Modules\User\EventListeners;
 

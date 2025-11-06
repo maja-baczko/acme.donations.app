@@ -24,7 +24,7 @@ class PaymentController {
     /**
      * @throws Throwable
      */
-    public function create(CreatePaymentRequest $request): JsonResponse {
+    public function store(CreatePaymentRequest $request): JsonResponse {
         $payment = $this->service->create($request->validated());
 
         return (new PaymentResource($payment))
@@ -36,13 +36,16 @@ class PaymentController {
         return new PaymentResource($payment);
     }
 
-    /**
-     * @throws Throwable
-     */
     public function destroy(Payment $payment): JsonResponse {
-        $this->service->delete($payment);
+        try {
+            $this->service->delete($payment);
 
-        return response()->json(null, 204);
+            return response()->json(null, 204);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 422);
+        }
     }
 
     /**
@@ -55,7 +58,7 @@ class PaymentController {
         // Authorization check
         if (! Gate::allows('viewReceipt', $payment)) {
             return response()->json([
-                'message' => 'You are not authorized to view this receipt.'
+                'message' => 'You are not authorized to view this receipt.',
             ], 403);
         }
 
@@ -70,7 +73,7 @@ class PaymentController {
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to generate receipt',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 422);
         }
     }

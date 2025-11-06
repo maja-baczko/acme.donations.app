@@ -52,7 +52,7 @@ class CampaignController {
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Failed to delete campaign',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 422);
         }
     }

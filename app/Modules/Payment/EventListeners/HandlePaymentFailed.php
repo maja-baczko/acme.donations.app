@@ -1,4 +1,4 @@
-<?php /** @noinspection ALL */
+<?php
 
 namespace App\Modules\Payment\EventListeners;
 
@@ -35,7 +35,7 @@ class HandlePaymentFailed implements ShouldQueue {
                 'error' => $event->errorMessage,
             ]);
         } else {
-            Log::warning("Payment failed but donation already failed or not found", [
+            Log::warning('Payment failed but donation already failed or not found', [
                 'payment_id' => $payment->id,
                 'donation_id' => $donation?->id,
                 'donation_status' => $donation?->status,

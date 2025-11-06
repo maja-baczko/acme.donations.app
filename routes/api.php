@@ -28,7 +28,6 @@ Route::prefix('v1')->group(function () {
     // Public system settings
     Route::get('/settings/public', [SystemSettingController::class, 'public'])->name('settings.public');
 
-
     /* --------------------------------------------------------------------------
      * Protected Routes (Authentication Required)
      * -------------------------------------------------------------------------*/
@@ -100,8 +99,10 @@ Route::prefix('v1')->group(function () {
         });
 
         // Payment --------------------------------------------------------------------------
+        Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
         Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
         Route::get('/payments/{payment}', [PaymentController::class, 'show'])->name('payments.show');
+        Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
         Route::get('/payments/{payment}/receipt', [PaymentController::class, 'receipt'])->name('payments.receipt');
 
         // Image --------------------------------------------------------------------------

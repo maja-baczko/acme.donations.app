@@ -24,7 +24,7 @@ class CreatePaymentRequest extends FormRequest {
         return [
             'donation_id' => ['required', 'integer', 'exists:donations,id'],
             'amount' => ['required', 'numeric', 'min:0.01'],
-            'status' => ['required', 'string', Rule::in(['processing', 'completed', 'failed'])],
+            'status' => ['sometimes', 'string', Rule::in(['processing', 'completed', 'failed'])],
             'gateway' => ['required', 'string', Rule::in(['stripe', 'paypal', 'mock'])],
             'metadata' => ['nullable', 'json'],
         ];

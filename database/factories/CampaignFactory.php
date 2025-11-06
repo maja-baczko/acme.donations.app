@@ -28,7 +28,7 @@ class CampaignFactory extends Factory {
             'updated_at' => Carbon::now(),
 
             'creator_id' => User::factory(),
-            'category_id' => Category::inRandomOrder()->first()?->id ?? Category::first()?->id,
+            'category_id' => Category::factory(),
         ];
     }
 

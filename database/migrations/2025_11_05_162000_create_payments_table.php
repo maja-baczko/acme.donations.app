@@ -1,4 +1,4 @@
-<?php /** @noinspection ALL */
+<?php
 
 use App\Modules\Donation\Models\Donation;
 use App\Modules\User\Models\User;
@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->enum('status', ['processing', 'completed', 'failed'])->default('processing');
             $table->string('gateway');
             $table->string('transaction_reference')->unique();
+            $table->text('error_message')->nullable();
             $table->text('metadata')->nullable();
             $table->timestamps();
         });

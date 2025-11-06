@@ -1,4 +1,4 @@
-<?php /** @noinspection ALL */
+<?php
 
 use App\Modules\Campaign\Models\Campaign;
 use App\Modules\User\Models\User;

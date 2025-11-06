@@ -1,11 +1,4 @@
-<?php /** @noinspection ALL */
-/** @noinspection ALL */
-/** @noinspection ALL */
-/** @noinspection ALL */
-/** @noinspection ALL */
-/** @noinspection ALL */
-
-/** @noinspection ALL */
+<?php
 
 namespace App\Modules\User\EventListeners;
 
@@ -26,7 +19,8 @@ class SendDonationNotification implements ShouldQueue {
 
         // Don't send if anonymous donation
         if ($donation->is_anonymous) {
-            Log::info("Skipping notification for anonymous donation #{$donation->id}");
+            Log::info("Skipping notification for anonymous donation #$donation->id");
+
             return;
         }
 
