@@ -182,6 +182,72 @@ class DonationService {
             ->sum('amount');
     }
 
-    public function exportForAccounting() {
+    /**
+     * Export donations for accounting with payment proofs
+     *
+     * @param array $filters
+     * @return array
+     */
+    public function exportForAccounting(array $filters = []): array {
+        $query = Donation::with(['donor', 'campaign', 'payment']);
+
+        // Apply filters
+        if (isset($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        if (isset($filters['campaign_id'])) {
+            $query->where('campaign_id', $filters['campaign_id']);
+        }
+
+        if (isset($filters['donor_id'])) {
+            $query->where('donor_id', $filters['donor_id']);
+        }
+
+        if (isset($filters['date_from'])) {
+            $query->where('created_at', '>=', $filters['date_from']);
+        }
+
+        if (isset($filters['date_to'])) {
+            $query->where('created_at', '<=', $filters['date_to']);
+        }
+
+        if (!($filters['include_anonymous'] ?? false)) {
+            $query->where('is_anonymous', false);
+        }
+
+        // Get donations ordered by date
+        $donations = $query->orderBy('created_at', 'desc')->get();
+
+        // Format data for export
+        $exportData = [];
+        foreach ($donations as $donation) {
+            $row = [
+                'date' => $donation->created_at->format('Y-m-d H:i:s'),
+                'donation_id' => $donation->id,
+                'campaign' => $donation->campaign->title,
+                'donor_name' => $donation->is_anonymous ? 'Anonymous' : $donation->donor->firstname.' '.$donation->donor->lastname,
+                'donor_email' => $donation->is_anonymous ? '' : $donation->donor->email,
+                'amount' => $donation->amount,
+                'status' => $donation->status,
+                'payment_method' => $donation->payment_method ?? '',
+                'payment_reference' => $donation->payment?->transaction_reference ?? '',
+                'payment_status' => $donation->payment?->status ?? '',
+                'comment' => $donation->comment ?? '',
+            ];
+
+            $exportData[] = $row;
+        }
+
+        return [
+            'data' => $exportData,
+            'summary' => [
+                'total_donations' => $donations->count(),
+                'total_amount' => $donations->where('status', 'completed')->sum('amount'),
+                'completed_count' => $donations->where('status', 'completed')->count(),
+                'pending_count' => $donations->where('status', 'pending')->count(),
+                'failed_count' => $donations->where('status', 'failed')->count(),
+            ],
+        ];
     }
 }

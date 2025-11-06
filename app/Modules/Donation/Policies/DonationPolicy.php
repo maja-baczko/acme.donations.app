@@ -44,4 +44,16 @@ class DonationPolicy {
     public function forceDelete(User $user): bool {
         return $user->hasPermissionTo('delete donations');
     }
+
+    /**
+     * Determine if the user can export donations for accounting
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function exportForAccounting(User $user): bool {
+        // Only users with 'view donations' permission can export
+        // Typically admin, managers, or accounting staff
+        return $user->hasPermissionTo('view donations');
+    }
 }

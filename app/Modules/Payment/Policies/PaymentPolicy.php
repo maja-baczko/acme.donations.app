@@ -36,4 +36,18 @@ class PaymentPolicy {
     public function forceDelete(User $user): bool {
         return $user->hasPermissionTo('delete donations');
     }
+
+    /**
+     * Determine if the user can view a payment receipt
+     *
+     * @param User $user
+     * @param Payment $payment
+     * @return bool
+     */
+    public function viewReceipt(User $user, Payment $payment): bool {
+        // User can view receipt if:
+        // 1. They are the payment owner
+        // 2. They have 'view donations' permission (admin/accounting)
+        return $user->id === $payment->user_id || $user->hasPermissionTo('view donations');
+    }
 }

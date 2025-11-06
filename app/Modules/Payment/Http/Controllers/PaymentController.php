@@ -6,8 +6,10 @@ use App\Modules\Payment\Http\Requests\CreatePaymentRequest;
 use App\Modules\Payment\Http\Resources\PaymentResource;
 use App\Modules\Payment\Models\Payment;
 use App\Modules\Payment\Services\PaymentService;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Throwable;
 
 class PaymentController {
@@ -41,5 +43,35 @@ class PaymentController {
         $this->service->delete($payment);
 
         return response()->json(null, 204);
+    }
+
+    /**
+     * Generate and return payment receipt
+     *
+     * @param Payment $payment
+     * @return JsonResponse
+     */
+    public function receipt(Payment $payment): JsonResponse {
+        // Authorization check
+        if (! Gate::allows('viewReceipt', $payment)) {
+            return response()->json([
+                'message' => 'You are not authorized to view this receipt.'
+            ], 403);
+        }
+
+        try {
+            $receiptData = $this->service->generateReceipt($payment);
+
+            return response()->json([
+                'success' => true,
+                'receipt' => $receiptData,
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to generate receipt',
+                'error' => $e->getMessage()
+            ], 422);
+        }
     }
 }

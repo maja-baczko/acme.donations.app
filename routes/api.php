@@ -94,9 +94,15 @@ Route::prefix('v1')->group(function () {
             Route::delete('/donations/{donation}', [DonationController::class, 'destroy'])->name('donations.destroy');
         });
 
+        // Export donations for accounting
+        Route::middleware('permission:view donations')->group(function () {
+            Route::get('/donations/export', [DonationController::class, 'export'])->name('donations.export');
+        });
+
         // Payment --------------------------------------------------------------------------
         Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
         Route::get('/payments/{payment}', [PaymentController::class, 'show'])->name('payments.show');
+        Route::get('/payments/{payment}/receipt', [PaymentController::class, 'receipt'])->name('payments.receipt');
 
         // Image --------------------------------------------------------------------------
         Route::apiResource('images', ImageController::class);
