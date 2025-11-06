@@ -2,46 +2,48 @@
 
 namespace App\Modules\Campaign\Http\Controllers;
 
+use App\Modules\Campaign\Http\Requests\CreateCategoryRequest;
+use App\Modules\Campaign\Http\Requests\UpdateCategoryRequest;
 use App\Modules\Campaign\Http\Resources\CategoryResource;
 use App\Modules\Campaign\Models\Category;
-use Illuminate\Http\Request;
+use App\Modules\Campaign\Services\CategoryService;
+use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CategoryController {
-    public function index() {
+    public function __construct(
+        private readonly CategoryService $service
+    ) {}
+
+    public function index(): AnonymousResourceCollection {
         return CategoryResource::collection(Category::all());
     }
 
-    public function create(Request $request) {
-        $data = $request->validate([
-            'name' => ['required'],
-            'slug' => ['required'],
-            'icon' => ['required', 'exists:images'],
-            'is_active' => ['boolean'],
-        ]);
+    public function create(CreateCategoryRequest $request): JsonResponse {
+        $category = $this->service->create($request->validated());
 
-        return new CategoryResource(Category::create($data));
+        return (new CategoryResource($category))
+            ->response()
+            ->setStatusCode(201);
     }
 
-    public function show(Category $category) {
+    public function show(Category $category): CategoryResource {
         return new CategoryResource($category);
     }
 
-    public function update(Request $request, Category $category) {
-        $data = $request->validate([
-            'name' => ['required'],
-            'slug' => ['required'],
-            'icon' => ['required', 'exists:images'],
-            'is_active' => ['boolean'],
-        ]);
-
-        $category->update($data);
+    public function update(UpdateCategoryRequest $request, Category $category): CategoryResource {
+        $category = $this->service->update($category, $request->validated());
 
         return new CategoryResource($category);
     }
 
-    public function destroy(Category $category) {
-        $category->delete();
+    /**
+     * @throws Exception
+     */
+    public function destroy(Category $category): JsonResponse {
+        $this->service->delete($category);
 
-        return response()->json();
+        return response()->json(null, 204);
     }
 }

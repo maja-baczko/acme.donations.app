@@ -2,11 +2,13 @@
 
 namespace App\Modules\Campaign\Models;
 
+use App\Modules\Donation\Models\Donation;
 use App\Modules\User\Models\User;
 use Database\Factories\CampaignFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Campaign extends Model {
     use HasFactory;
@@ -38,6 +40,10 @@ class Campaign extends Model {
 
     public function category(): BelongsTo {
         return $this->belongsTo(Category::class);
+    }
+
+    public function donations(): HasMany {
+        return $this->hasMany(Donation::class);
     }
 
     protected function casts(): array {

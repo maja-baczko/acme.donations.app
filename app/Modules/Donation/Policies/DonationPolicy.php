@@ -4,54 +4,44 @@ namespace App\Modules\Donation\Policies;
 
 use App\Modules\Donation\Models\Donation;
 use App\Modules\User\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class DonationPolicy {
-    /**
-     * Determine whether the user can view any models.
-     */
+    use HandlesAuthorization;
+
     public function viewAny(User $user): bool {
-        return false;
+        return $user->hasPermissionTo('view donations');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
     public function view(User $user, Donation $donation): bool {
-        return false;
+        // Can view if has permission OR is the donor
+        return $user->hasPermissionTo('view donations') || $donation->donor_id === $user->id;
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
     public function create(User $user): bool {
-        return false;
+        // All authenticated users can donate, OR user has create permission
+        return $user->hasPermissionTo('create donations') || auth()->check();
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
     public function update(User $user, Donation $donation): bool {
-        return false;
+        // Can update if has permission OR (is the donor AND donation is still pending)
+        if ($user->hasPermissionTo('edit donations')) {
+            return true;
+        }
+
+        return $donation->donor_id === $user->id && $donation->status === 'pending';
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
     public function delete(User $user, Donation $donation): bool {
-        return false;
+        // Can only delete if has permission AND donation is not completed
+        return $user->hasPermissionTo('delete donations') && $donation->status !== 'completed';
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Donation $donation): bool {
-        return false;
+    public function restore(User $user): bool {
+        return $user->hasPermissionTo('delete donations');
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Donation $donation): bool {
-        return false;
+    public function forceDelete(User $user): bool {
+        return $user->hasPermissionTo('delete donations');
     }
 }

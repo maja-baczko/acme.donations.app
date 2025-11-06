@@ -4,54 +4,48 @@ namespace App\Modules\Campaign\Policies;
 
 use App\Modules\Campaign\Models\Campaign;
 use App\Modules\User\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CampaignPolicy {
-    /**
-     * Determine whether the user can view any models.
-     */
+    use HandlesAuthorization;
+
     public function viewAny(User $user): bool {
-        return false;
+        return $user->hasPermissionTo('view campaigns');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
     public function view(User $user, Campaign $campaign): bool {
-        return false;
+        // Can view if has permission OR is the campaign creator
+        return $user->hasPermissionTo('view campaigns') || $campaign->creator_id === $user->id;
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
     public function create(User $user): bool {
-        return false;
+        return $user->hasPermissionTo('create campaigns');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
     public function update(User $user, Campaign $campaign): bool {
-        return false;
+        // Can update if has permission OR is the campaign creator
+        return $user->hasPermissionTo('edit campaigns') || $campaign->creator_id === $user->id;
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
     public function delete(User $user, Campaign $campaign): bool {
-        return false;
+        // Check permission or ownership first
+        $hasPermission = $user->hasPermissionTo('delete campaigns') || $campaign->creator_id === $user->id;
+
+        if (!$hasPermission) {
+            return false;
+        }
+
+        // Prevent deletion if campaign has completed donations
+        $hasCompletedDonations = $campaign->donations()->where('status', 'completed')->exists();
+
+        return !$hasCompletedDonations;
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Campaign $campaign): bool {
-        return false;
+    public function restore(User $user): bool {
+        return $user->hasPermissionTo('delete campaigns');
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Campaign $campaign): bool {
-        return false;
+    public function forceDelete(User $user): bool {
+        return $user->hasPermissionTo('delete campaigns');
     }
 }

@@ -2,69 +2,44 @@
 
 namespace App\Modules\User\Http\Controllers;
 
+use App\Modules\User\Http\Requests\CreateUserRequest;
+use App\Modules\User\Http\Requests\UpdateUserRequest;
 use App\Modules\User\Http\Resources\UserResource;
 use App\Modules\User\Models\User;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Http\Request;
+use App\Modules\User\Services\UserService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserController {
-    use AuthorizesRequests;
+    public function __construct(
+        private readonly UserService $service
+    ) {}
 
-    public function index() {
-        $this->authorize('viewAny', User::class);
-
+    public function index(): AnonymousResourceCollection {
         return UserResource::collection(User::all());
     }
 
-    public function create(Request $request) {
-        $this->authorize('create', User::class);
+    public function create(CreateUserRequest $request): JsonResponse {
+        $user = $this->service->create($request->validated());
 
-        $data = $request->validate([
-            'firstname' => ['required'],
-            'lastname' => ['required'],
-            'email' => ['required', 'email', 'max:254'],
-            'password' => ['required'],
-            'department' => ['required'],
-            'function' => ['required'],
-            'still_working' => ['required'],
-            'role_id' => ['required', 'exists:roles'],
-            'profile' => ['required', 'exists:images'],
-        ]);
-
-        return new UserResource(User::create($data));
+        return (new UserResource($user))
+            ->response()
+            ->setStatusCode(201);
     }
 
-    public function show(User $user) {
-        $this->authorize('view', $user);
+    public function show(User $user): UserResource {
+        return new UserResource($user);
+    }
+
+    public function update(UpdateUserRequest $request, User $user): UserResource {
+        $user = $this->service->update($user, $request->validated());
 
         return new UserResource($user);
     }
 
-    public function update(Request $request, User $user) {
-        $this->authorize('update', $user);
+    public function destroy(User $user): JsonResponse {
+        $this->service->delete($user);
 
-        $data = $request->validate([
-            'firstname' => ['required'],
-            'lastname' => ['required'],
-            'email' => ['required', 'email', 'max:254'],
-            'password' => ['required'],
-            'department' => ['required'],
-            'function' => ['required'],
-            'still_working' => ['required'],
-            'role_id' => ['required', 'exists:roles'],
-            'profile' => ['required', 'exists:images'],
-        ]);
-
-        $user->update($data);
-
-        return new UserResource($user);
-    }
-
-    public function destroy(User $user) {
-        $this->authorize('delete', $user);
-
-        $user->delete();
-
-        return response()->json();
+        return response()->json(null, 204);
     }
 }

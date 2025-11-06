@@ -3,11 +3,13 @@
 namespace App\Modules\Donation\Models;
 
 use App\Modules\Campaign\Models\Campaign;
+use App\Modules\Payment\Models\Payment;
 use App\Modules\User\Models\User;
 use Database\Factories\DonationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Donation extends Model {
     use HasFactory;
@@ -30,5 +32,9 @@ class Donation extends Model {
 
     public function donor(): BelongsTo {
         return $this->belongsTo(User::class, 'donor_id');
+    }
+
+    public function payment(): HasOne {
+        return $this->hasOne(Payment::class);
     }
 }

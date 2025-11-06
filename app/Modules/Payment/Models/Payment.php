@@ -24,6 +24,7 @@ class Payment extends Model {
         'status',          // pending | completed | failed
         'gateway',         // mock, stripe, molly
         'transaction_reference',  // reference issued by the payment provider
+        'error_message',
     ];
 
     public function donation(): BelongsTo {

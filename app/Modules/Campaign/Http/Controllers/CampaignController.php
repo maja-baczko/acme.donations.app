@@ -2,64 +2,58 @@
 
 namespace App\Modules\Campaign\Http\Controllers;
 
+use App\Modules\Campaign\Http\Requests\CreateCampaignRequest;
+use App\Modules\Campaign\Http\Requests\UpdateCampaignRequest;
 use App\Modules\Campaign\Http\Resources\CampaignResource;
 use App\Modules\Campaign\Models\Campaign;
-use Illuminate\Http\Request;
+use App\Modules\Campaign\Services\CampaignService;
+use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Throwable;
 
 class CampaignController {
-    public function index() {
+    public function __construct(
+        private readonly CampaignService $service
+    ) {}
+
+    public function index(): AnonymousResourceCollection {
         return CampaignResource::collection(Campaign::all());
     }
 
-    public function create(Request $request) {
-        $data = $request->validate([
-            'creator_id' => ['required', 'exists:users'],
-            'category_id' => ['required', 'exists:categories'],
-            'title' => ['required'],
-            'slug' => ['required'],
-            'description' => ['required'],
-            'goal_amount' => ['required', 'numeric'],
-            'current_amount' => ['required', 'numeric'],
-            'status' => ['required'],
-            'start_date' => ['required', 'date'],
-            'end_date' => ['required', 'date'],
-            'beneficiary_name' => ['required'],
-            'beneficiary_website' => ['required'],
-            'featured' => ['boolean'],
-        ]);
+    /**
+     * @throws Throwable
+     */
+    public function create(CreateCampaignRequest $request): JsonResponse {
+        $campaign = $this->service->create($request->validated());
 
-        return new CampaignResource(Campaign::create($data));
+        return (new CampaignResource($campaign))
+            ->response()
+            ->setStatusCode(201);
     }
 
-    public function show(Campaign $campaign) {
+    public function show(Campaign $campaign): CampaignResource {
         return new CampaignResource($campaign);
     }
 
-    public function update(Request $request, Campaign $campaign) {
-        $data = $request->validate([
-            'creator_id' => ['required', 'exists:users'],
-            'category_id' => ['required', 'exists:categories'],
-            'title' => ['required'],
-            'slug' => ['required'],
-            'description' => ['required'],
-            'goal_amount' => ['required', 'numeric'],
-            'current_amount' => ['required', 'numeric'],
-            'status' => ['required'],
-            'start_date' => ['required', 'date'],
-            'end_date' => ['required', 'date'],
-            'beneficiary_name' => ['required'],
-            'beneficiary_website' => ['required'],
-            'featured' => ['boolean'],
-        ]);
-
-        $campaign->update($data);
+    /**
+     * @throws Throwable
+     */
+    public function update(UpdateCampaignRequest $request, Campaign $campaign): CampaignResource {
+        $campaign = $this->service->update($campaign, $request->validated());
 
         return new CampaignResource($campaign);
     }
 
-    public function destroy(Campaign $campaign) {
-        $campaign->delete();
-
-        return response()->json();
+    public function destroy(Campaign $campaign): JsonResponse {
+        try {
+            $this->service->delete($campaign);
+            return response()->json(null, 204);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Failed to delete campaign',
+                'error' => $e->getMessage()
+            ], 422);
+        }
     }
 }

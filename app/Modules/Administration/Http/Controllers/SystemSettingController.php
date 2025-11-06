@@ -2,54 +2,60 @@
 
 namespace App\Modules\Administration\Http\Controllers;
 
+use App\Modules\Administration\Http\Requests\CreateSystemSettingRequest;
+use App\Modules\Administration\Http\Requests\UpdateSystemSettingRequest;
 use App\Modules\Administration\Http\Resources\SystemSettingResource;
 use App\Modules\Administration\Models\SystemSetting;
-use Illuminate\Http\Request;
+use App\Modules\Administration\Services\SystemSettingService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Throwable;
 
 class SystemSettingController {
-    public function index() {
-        return SystemSettingResource::collection(SystemSetting::all());
+    public function __construct(
+        private readonly SystemSettingService $service
+    ) {}
+
+    public function index(): AnonymousResourceCollection {
+        $settings = $this->service->getAllSettings();
+        return SystemSettingResource::collection($settings);
     }
 
-    public function public() {
-        return SystemSettingResource::collection(
-            SystemSetting::where('is_public', true)->get()
-        );
+    public function public(): AnonymousResourceCollection {
+        $settings = $this->service->getPublicSettings();
+        return SystemSettingResource::collection($settings);
     }
 
-    public function create(Request $request) {
-        $data = $request->validate([
-            'key' => ['required'],
-            'value' => ['required'],
-            'type' => ['required'],
-            'description' => ['required'],
-            'is_public' => ['boolean'],
-        ]);
+    /**
+     * @throws Throwable
+     */
+    public function create(CreateSystemSettingRequest $request): JsonResponse {
+        $setting = $this->service->create($request->validated());
 
-        return new SystemSettingResource(SystemSetting::create($data));
+        return (new SystemSettingResource($setting))
+            ->response()
+            ->setStatusCode(201);
     }
 
-    public function show(SystemSetting $systemSetting) {
+    public function show(SystemSetting $systemSetting): SystemSettingResource {
         return new SystemSettingResource($systemSetting);
     }
 
-    public function update(Request $request, SystemSetting $systemSetting) {
-        $data = $request->validate([
-            'key' => ['required'],
-            'value' => ['required'],
-            'type' => ['required'],
-            'description' => ['required'],
-            'is_public' => ['boolean'],
-        ]);
+    /**
+     * @throws Throwable
+     */
+    public function update(UpdateSystemSettingRequest $request, SystemSetting $systemSetting): SystemSettingResource {
+        $setting = $this->service->update($systemSetting, $request->validated());
 
-        $systemSetting->update($data);
-
-        return new SystemSettingResource($systemSetting);
+        return new SystemSettingResource($setting);
     }
 
-    public function destroy(SystemSetting $systemSetting) {
-        $systemSetting->delete();
+    /**
+     * @throws Throwable
+     */
+    public function destroy(SystemSetting $systemSetting): JsonResponse {
+        $this->service->delete($systemSetting);
 
-        return response()->json();
+        return response()->json(null, 204);
     }
 }

@@ -2,50 +2,44 @@
 
 namespace App\Modules\Payment\Http\Controllers;
 
+use App\Modules\Payment\Http\Requests\CreatePaymentRequest;
 use App\Modules\Payment\Http\Resources\PaymentResource;
 use App\Modules\Payment\Models\Payment;
-use Illuminate\Http\Request;
+use App\Modules\Payment\Services\PaymentService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Throwable;
 
 class PaymentController {
-    public function index() {
+    public function __construct(
+        private readonly PaymentService $service
+    ) {}
+
+    public function index(): AnonymousResourceCollection {
         return PaymentResource::collection(Payment::all());
     }
 
-    public function create(Request $request) {
-        $data = $request->validate([
-            'donation_id' => ['required', 'exists:donations'],
-            'user_id' => ['required', 'exists:users'],
-            'amount' => ['required'],
-            'status' => ['required'],
-            'gateway' => ['required'],
-            'transaction_reference' => ['required'],
-        ]);
+    /**
+     * @throws Throwable
+     */
+    public function create(CreatePaymentRequest $request): JsonResponse {
+        $payment = $this->service->create($request->validated());
 
-        return new PaymentResource(Payment::create($data));
+        return (new PaymentResource($payment))
+            ->response()
+            ->setStatusCode(201);
     }
 
-    public function show(Payment $payment) {
+    public function show(Payment $payment): PaymentResource {
         return new PaymentResource($payment);
     }
 
-    public function update(Request $request, Payment $payment) {
-        $data = $request->validate([
-            'donation_id' => ['required', 'exists:donations'],
-            'user_id' => ['required', 'exists:users'],
-            'amount' => ['required'],
-            'status' => ['required'],
-            'gateway' => ['required'],
-            'transaction_reference' => ['required'],
-        ]);
+    /**
+     * @throws Throwable
+     */
+    public function destroy(Payment $payment): JsonResponse {
+        $this->service->delete($payment);
 
-        $payment->update($data);
-
-        return new PaymentResource($payment);
-    }
-
-    public function destroy(Payment $payment) {
-        $payment->delete();
-
-        return response()->json();
+        return response()->json(null, 204);
     }
 }

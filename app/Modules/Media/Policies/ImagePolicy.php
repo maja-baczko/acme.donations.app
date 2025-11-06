@@ -2,56 +2,75 @@
 
 namespace App\Modules\Media\Policies;
 
+use App\Modules\Campaign\Models\Campaign;
 use App\Modules\Media\Models\Image;
 use App\Modules\User\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ImagePolicy {
-    /**
-     * Determine whether the user can view any models.
-     */
+    use HandlesAuthorization;
+
     public function viewAny(User $user): bool {
-        return false;
+        // Any authenticated user can view images
+        return auth()->check();
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
     public function view(User $user, Image $image): bool {
-        return false;
+        // Any authenticated user can view an image
+        return true;
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
     public function create(User $user): bool {
-        return false;
+        // Any authenticated user can upload images
+        return true;
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
     public function update(User $user, Image $image): bool {
-        return false;
+        // Check if user is admin with relevant permissions
+        if ($user->hasPermissionTo('edit campaigns') || $user->hasPermissionTo('edit users')) {
+            return true;
+        }
+
+        // Check ownership based on entity type
+        return $this->isOwner($user, $image);
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
     public function delete(User $user, Image $image): bool {
-        return false;
+        // Check if user is admin with relevant permissions
+        if ($user->hasPermissionTo('edit campaigns') || $user->hasPermissionTo('edit users')) {
+            return true;
+        }
+
+        // Check ownership based on entity type
+        return $this->isOwner($user, $image);
+    }
+
+    public function restore(User $user): bool {
+        return $user->hasPermissionTo('edit campaigns') || $user->hasPermissionTo('edit users');
+    }
+
+    public function forceDelete(User $user): bool {
+        return $user->hasPermissionTo('edit campaigns') || $user->hasPermissionTo('edit users');
     }
 
     /**
-     * Determine whether the user can restore the model.
+     * Check if the user owns the entity that the image is attached to
      */
-    public function restore(User $user, Image $image): bool {
-        return false;
-    }
+    private function isOwner(User $user, Image $image): bool {
+        if (!$image->entity_type || !$image->entity_id) {
+            return false;
+        }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Image $image): bool {
+        // Check ownership based on entity type
+        if ($image->entity_type === 'App\\Modules\\Campaign\\Models\\Campaign') {
+            $campaign = Campaign::find($image->entity_id);
+            return $campaign && $campaign->creator_id === $user->id;
+        }
+
+        if ($image->entity_type === 'App\\Modules\\User\\Models\\User') {
+            return $image->entity_id === $user->id;
+        }
+
         return false;
     }
 }
