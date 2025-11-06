@@ -13,10 +13,14 @@ class PaymentFactory extends Factory {
 
     public function definition(): array {
         return [
-            'amount' => $this->faker->word(),
-            'status' => $this->faker->word(),
-            'gateway' => $this->faker->word(),
-            'transaction_reference' => $this->faker->word(),
+            'amount' => $this->faker->randomFloat(2, 5, 50000),
+            'status' => $this->faker->randomElement(['processing', 'completed', 'failed']),
+            'gateway' => $this->faker->randomElement(['stripe', 'paypal', 'bank_transfer']),
+            'transaction_reference' => $this->faker->unique()->uuid(),
+            'metadata' => json_encode([
+                'payment_intent_id' => 'pi_'.$this->faker->regexify('[A-Za-z0-9]{24}'),
+                'charge_id' => 'ch_'.$this->faker->regexify('[A-Za-z0-9]{24}'),
+            ]),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
 
