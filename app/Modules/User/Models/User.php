@@ -4,19 +4,18 @@ namespace App\Modules\User\Models;
 
 use App\Modules\Media\Models\Image;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable {
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, HasRoles, Notifiable;
 
     /**
      * Create a new factory instance for the model.
      */
-    protected static function newFactory()
-    {
+    protected static function newFactory() {
         return \Database\Factories\UserFactory::new();
     }
 

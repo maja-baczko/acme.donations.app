@@ -3,16 +3,13 @@
 namespace Database\Seeders;
 
 use App\Modules\Administration\Models\SystemSetting;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class SystemSettingSeeder extends Seeder
-{
+class SystemSettingSeeder extends Seeder {
     /**
      * Run the database seeds.
      */
-    public function run(): void
-    {
+    public function run(): void {
         $settings = [
             [
                 'key' => 'app_name',

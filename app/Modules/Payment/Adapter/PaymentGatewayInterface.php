@@ -2,6 +2,4 @@
 
 namespace App\Modules\Payment\Adapter;
 
-interface PaymentGatewayInterface {
-
-}
+interface PaymentGatewayInterface {}

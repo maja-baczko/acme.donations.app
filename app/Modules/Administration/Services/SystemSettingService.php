@@ -3,6 +3,5 @@
 namespace App\Modules\Administration\Services;
 
 class SystemSettingService {
-	public function __construct() {
-	}
+    public function __construct() {}
 }

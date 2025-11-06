@@ -5,8 +5,7 @@ namespace App\Modules\Donation\Events;
 use Illuminate\Foundation\Events\Dispatchable;
 
 class DonationCompletedEvent {
-	use Dispatchable;
+    use Dispatchable;
 
-	public function __construct() {
-	}
+    public function __construct() {}
 }

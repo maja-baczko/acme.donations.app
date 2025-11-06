@@ -4,13 +4,11 @@ namespace App\Modules\Donation\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateDonationRequest extends FormRequest
-{
+class CreateDonationRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
-    {
+    public function authorize(): bool {
         return false;
     }
 
@@ -19,8 +17,7 @@ class CreateDonationRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
-    {
+    public function rules(): array {
         return [
             //
         ];

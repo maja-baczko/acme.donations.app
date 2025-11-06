@@ -8,22 +8,22 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Category extends Model {
-	use HasFactory;
+    use HasFactory;
 
-	protected $fillable = [
-		'name',
-		'slug',
-		'icon',
-		'is_active',
-	];
+    protected $fillable = [
+        'name',
+        'slug',
+        'icon',
+        'is_active',
+    ];
 
-	public function icon(): BelongsTo {
-		return $this->belongsTo(Image::class, 'icon');
-	}
+    public function icon(): BelongsTo {
+        return $this->belongsTo(Image::class, 'icon');
+    }
 
-	protected function casts(): array {
-		return [
-			'is_active' => 'boolean',
-		];
-	}
+    protected function casts(): array {
+        return [
+            'is_active' => 'boolean',
+        ];
+    }
 }

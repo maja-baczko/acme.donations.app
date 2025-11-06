@@ -8,16 +8,16 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 /** @mixin Category */
 class CategoryResource extends JsonResource {
-	public function toArray(Request $request): array {
-		return [
-			'id' => $this->id,
-			'name' => $this->name,
-			'slug' => $this->slug,
-			'is_active' => $this->is_active,
-			'created_at' => $this->created_at,
-			'updated_at' => $this->updated_at,
+    public function toArray(Request $request): array {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'slug' => $this->slug,
+            'is_active' => $this->is_active,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
 
-			'icon' => $this->icon,
-		];
-	}
+            'icon' => $this->icon,
+        ];
+    }
 }

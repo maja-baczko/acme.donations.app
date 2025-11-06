@@ -2,6 +2,4 @@
 
 namespace App\Modules\Payment\Adapter;
 
-class MockPaymentGateway {
-
-}
+class MockPaymentGateway {}

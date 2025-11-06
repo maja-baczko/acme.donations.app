@@ -8,63 +8,63 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
 class UserController {
-	use AuthorizesRequests;
+    use AuthorizesRequests;
 
-	public function index() {
-		$this->authorize('viewAny', User::class);
+    public function index() {
+        $this->authorize('viewAny', User::class);
 
-		return UserResource::collection(User::all());
-	}
+        return UserResource::collection(User::all());
+    }
 
-	public function create(Request $request) {
-		$this->authorize('create', User::class);
+    public function create(Request $request) {
+        $this->authorize('create', User::class);
 
-		$data = $request->validate([
-			'firstname' => ['required'],
-			'lastname' => ['required'],
-			'email' => ['required', 'email', 'max:254'],
-			'password' => ['required'],
-			'department' => ['required'],
-			'function' => ['required'],
-			'still_working' => ['required'],
-			'role_id' => ['required', 'exists:roles'],
-			'profile' => ['required', 'exists:images'],
-		]);
+        $data = $request->validate([
+            'firstname' => ['required'],
+            'lastname' => ['required'],
+            'email' => ['required', 'email', 'max:254'],
+            'password' => ['required'],
+            'department' => ['required'],
+            'function' => ['required'],
+            'still_working' => ['required'],
+            'role_id' => ['required', 'exists:roles'],
+            'profile' => ['required', 'exists:images'],
+        ]);
 
-		return new UserResource(User::create($data));
-	}
+        return new UserResource(User::create($data));
+    }
 
-	public function show(User $user) {
-		$this->authorize('view', $user);
+    public function show(User $user) {
+        $this->authorize('view', $user);
 
-		return new UserResource($user);
-	}
+        return new UserResource($user);
+    }
 
-	public function update(Request $request, User $user) {
-		$this->authorize('update', $user);
+    public function update(Request $request, User $user) {
+        $this->authorize('update', $user);
 
-		$data = $request->validate([
-			'firstname' => ['required'],
-			'lastname' => ['required'],
-			'email' => ['required', 'email', 'max:254'],
-			'password' => ['required'],
-			'department' => ['required'],
-			'function' => ['required'],
-			'still_working' => ['required'],
-			'role_id' => ['required', 'exists:roles'],
-			'profile' => ['required', 'exists:images'],
-		]);
+        $data = $request->validate([
+            'firstname' => ['required'],
+            'lastname' => ['required'],
+            'email' => ['required', 'email', 'max:254'],
+            'password' => ['required'],
+            'department' => ['required'],
+            'function' => ['required'],
+            'still_working' => ['required'],
+            'role_id' => ['required', 'exists:roles'],
+            'profile' => ['required', 'exists:images'],
+        ]);
 
-		$user->update($data);
+        $user->update($data);
 
-		return new UserResource($user);
-	}
+        return new UserResource($user);
+    }
 
-	public function destroy(User $user) {
-		$this->authorize('delete', $user);
+    public function destroy(User $user) {
+        $this->authorize('delete', $user);
 
-		$user->delete();
+        $user->delete();
 
-		return response()->json();
-	}
+        return response()->json();
+    }
 }

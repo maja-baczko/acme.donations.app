@@ -4,13 +4,11 @@ namespace App\Modules\Administration\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateAuditLogRequest extends FormRequest
-{
+class UpdateAuditLogRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
-    {
+    public function authorize(): bool {
         return false;
     }
 
@@ -19,8 +17,7 @@ class UpdateAuditLogRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
-    {
+    public function rules(): array {
         return [
             //
         ];

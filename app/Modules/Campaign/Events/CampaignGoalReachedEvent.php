@@ -5,8 +5,7 @@ namespace App\Modules\Campaign\Events;
 use Illuminate\Foundation\Events\Dispatchable;
 
 class CampaignGoalReachedEvent {
-	use Dispatchable;
+    use Dispatchable;
 
-	public function __construct() {
-	}
+    public function __construct() {}
 }

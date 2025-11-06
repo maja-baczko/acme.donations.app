@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Payment extends Model {
-	use HasFactory;
+    use HasFactory;
 
     protected $fillable = [
         'donation_id',
@@ -20,11 +20,11 @@ class Payment extends Model {
         'transaction_reference',  // reference issued by the payment provider
     ];
 
-	public function donation(): BelongsTo {
-		return $this->belongsTo(Donation::class);
-	}
+    public function donation(): BelongsTo {
+        return $this->belongsTo(Donation::class);
+    }
 
-	public function user(): BelongsTo {
-		return $this->belongsTo(User::class);
-	}
+    public function user(): BelongsTo {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -6,15 +6,13 @@ use App\Modules\User\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder
-{
+class DatabaseSeeder extends Seeder {
     use WithoutModelEvents;
 
     /**
      * Seed the application's database.
      */
-    public function run(): void
-    {
+    public function run(): void {
         // Seed permissions and roles first
         $this->call([
             PermissionSeeder::class,
@@ -38,7 +36,7 @@ class DatabaseSeeder extends Seeder
                 'function' => 'Administrator',
             ]
         );
-        if (!$admin->hasRole('admin')) {
+        if (! $admin->hasRole('admin')) {
             $admin->assignRole('admin');
         }
 
@@ -54,7 +52,7 @@ class DatabaseSeeder extends Seeder
                 'function' => 'Manager',
             ]
         );
-        if (!$manager->hasRole('manager')) {
+        if (! $manager->hasRole('manager')) {
             $manager->assignRole('manager');
         }
 
@@ -70,7 +68,7 @@ class DatabaseSeeder extends Seeder
                 'function' => 'Analyst',
             ]
         );
-        if (!$employee->hasRole('employee')) {
+        if (! $employee->hasRole('employee')) {
             $employee->assignRole('employee');
         }
     }

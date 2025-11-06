@@ -5,8 +5,7 @@ namespace App\Modules\Payment\Events;
 use Illuminate\Foundation\Events\Dispatchable;
 
 class PaymentCompletedEvent {
-	use Dispatchable;
+    use Dispatchable;
 
-	public function __construct() {
-	}
+    public function __construct() {}
 }
