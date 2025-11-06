@@ -6,6 +6,7 @@ use App\Modules\Campaign\Models\Category;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class CategoryService {
     /**
@@ -13,8 +14,8 @@ class CategoryService {
      *
      * @param array $data
      * @return Category
-     * @throws \Throwable
-     * @throws \Throwable
+     * @throws Throwable
+     * @throws Throwable
      */
     public function create(array $data): Category {
         return DB::transaction(function () use ($data) {
@@ -29,8 +30,8 @@ class CategoryService {
      * @param Category $category
      * @param array $data
      * @return Category
-     * @throws \Throwable
-     * @throws \Throwable
+     * @throws Throwable
+     * @throws Throwable
      */
     public function update(Category $category, array $data): Category {
         return DB::transaction(function () use ($category, $data) {
@@ -45,7 +46,7 @@ class CategoryService {
      * @param Category $category
      * @return bool
      * @throws Exception
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function delete(Category $category): bool {
         return DB::transaction(function () use ($category) {
@@ -83,8 +84,8 @@ class CategoryService {
      *
      * @param Category $category
      * @return Category
-     * @throws \Throwable
-     * @throws \Throwable
+     * @throws Throwable
+     * @throws Throwable
      */
     public function toggleActive(Category $category): Category {
         return DB::transaction(function () use ($category) {

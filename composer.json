@@ -1,5 +1,4 @@
 {
-    "$schema": "https://getcomposer.org/schema.json",
     "name": "acme/donation-app",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",

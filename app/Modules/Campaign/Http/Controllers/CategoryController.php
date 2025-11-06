@@ -10,6 +10,7 @@ use App\Modules\Campaign\Services\CategoryService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Throwable;
 
 class CategoryController {
     public function __construct(
@@ -20,6 +21,9 @@ class CategoryController {
         return CategoryResource::collection(Category::all());
     }
 
+    /**
+     * @throws Throwable
+     */
     public function create(CreateCategoryRequest $request): JsonResponse {
         $category = $this->service->create($request->validated());
 
@@ -32,6 +36,9 @@ class CategoryController {
         return new CategoryResource($category);
     }
 
+    /**
+     * @throws Throwable
+     */
     public function update(UpdateCategoryRequest $request, Category $category): CategoryResource {
         $category = $this->service->update($category, $request->validated());
 
@@ -39,7 +46,7 @@ class CategoryController {
     }
 
     /**
-     * @throws Exception
+     * @throws Exception|Throwable
      */
     public function destroy(Category $category): JsonResponse {
         $this->service->delete($category);

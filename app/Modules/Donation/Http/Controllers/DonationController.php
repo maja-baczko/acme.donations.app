@@ -10,6 +10,7 @@ use App\Modules\Donation\Services\DonationService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Throwable;
 
 class DonationController {
     public function __construct(
@@ -20,6 +21,9 @@ class DonationController {
         return DonationResource::collection(Donation::all());
     }
 
+    /**
+     * @throws Throwable
+     */
     public function create(CreateDonationRequest $request): JsonResponse {
         $donation = $this->service->create($request->validated());
 
@@ -32,6 +36,9 @@ class DonationController {
         return new DonationResource($donation);
     }
 
+    /**
+     * @throws Throwable
+     */
     public function update(UpdateDonationRequest $request, Donation $donation): DonationResource {
         $donation = $this->service->update($donation, $request->validated());
 

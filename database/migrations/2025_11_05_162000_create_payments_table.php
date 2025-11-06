@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection ALL */
 
 use App\Modules\Donation\Models\Donation;
 use App\Modules\User\Models\User;

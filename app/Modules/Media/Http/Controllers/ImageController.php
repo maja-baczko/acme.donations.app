@@ -9,6 +9,7 @@ use App\Modules\Media\Models\Image;
 use App\Modules\Media\Services\ImageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Throwable;
 
 class ImageController {
     public function __construct(
@@ -19,6 +20,9 @@ class ImageController {
         return ImageResource::collection(Image::all());
     }
 
+    /**
+     * @throws Throwable
+     */
     public function create(CreateImageRequest $request): JsonResponse {
         $image = $this->service->create($request->validated());
 
@@ -31,12 +35,18 @@ class ImageController {
         return new ImageResource($image);
     }
 
+    /**
+     * @throws Throwable
+     */
     public function update(UpdateImageRequest $request, Image $image): ImageResource {
         $image = $this->service->update($image, $request->validated());
 
         return new ImageResource($image);
     }
 
+    /**
+     * @throws Throwable
+     */
     public function destroy(Image $image): JsonResponse {
         $this->service->delete($image);
 

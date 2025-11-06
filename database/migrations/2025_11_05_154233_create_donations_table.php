@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection ALL */
 
 use App\Modules\Campaign\Models\Campaign;
 use App\Modules\User\Models\User;
@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignIdFor(Campaign::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class, 'donor_id')->constrained('users')->cascadeOnDelete();
-            $table->decimal('amount', 10, 2);
+            $table->decimal('amount', 10);
             $table->enum('status', ['pending', 'completed', 'failed'])->default('pending');
             $table->string('payment_method')->nullable();
             $table->text('comment')->nullable();

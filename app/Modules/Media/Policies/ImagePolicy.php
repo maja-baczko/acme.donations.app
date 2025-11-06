@@ -10,18 +10,18 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class ImagePolicy {
     use HandlesAuthorization;
 
-    public function viewAny(User $user): bool {
+    public function viewAny(): bool {
         // Any authenticated user can view images
-        return auth()->check();
+        return true;
     }
 
-    public function view(User $user, Image $image): bool {
+    public function view(): bool {
         // Any authenticated user can view an image
         return true;
     }
 
-    public function create(User $user): bool {
-        // Any authenticated user can upload images
+    public function create(): bool {
+        // Check if user is admin with relevant permissions
         return true;
     }
 

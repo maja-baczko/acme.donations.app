@@ -9,6 +9,7 @@ use App\Modules\User\Models\User;
 use App\Modules\User\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Throwable;
 
 class UserController {
     public function __construct(
@@ -19,6 +20,9 @@ class UserController {
         return UserResource::collection(User::all());
     }
 
+    /**
+     * @throws Throwable
+     */
     public function create(CreateUserRequest $request): JsonResponse {
         $user = $this->service->create($request->validated());
 
@@ -31,12 +35,18 @@ class UserController {
         return new UserResource($user);
     }
 
+    /**
+     * @throws Throwable
+     */
     public function update(UpdateUserRequest $request, User $user): UserResource {
         $user = $this->service->update($user, $request->validated());
 
         return new UserResource($user);
     }
 
+    /**
+     * @throws Throwable
+     */
     public function destroy(User $user): JsonResponse {
         $this->service->delete($user);
 
