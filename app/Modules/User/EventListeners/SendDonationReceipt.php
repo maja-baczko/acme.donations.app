@@ -2,10 +2,10 @@
 
 namespace App\Modules\User\EventListeners;
 
-use App\Modules\Donation\Events\DonationCompletedEvent;
+use App\Modules\Donation\Events\DonationStatusEvent;
 
 class SendDonationReceipt {
     public function __construct() {}
 
-    public function handle(DonationCompletedEvent $event): void {}
+    public function handle(DonationStatusEvent $event): void {}
 }

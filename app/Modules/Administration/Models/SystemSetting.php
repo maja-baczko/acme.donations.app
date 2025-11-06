@@ -6,19 +6,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class SystemSetting extends Model {
-	use HasFactory;
+    use HasFactory;
 
-	protected $fillable = [
-		'key',
-		'value',
-		'type',
-		'description',
-		'is_public',
-	];
+    protected $fillable = [
+        'key',
+        'value',
+        'type',
+        'description',
+        'is_public',
+    ];
 
-	protected function casts(): array {
-		return [
-			'is_public' => 'boolean',
-		];
-	}
+    protected function casts(): array {
+        return [
+            'is_public' => 'boolean',
+        ];
+    }
 }

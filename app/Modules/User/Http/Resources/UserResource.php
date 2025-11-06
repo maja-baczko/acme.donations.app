@@ -15,18 +15,16 @@ class UserResource extends JsonResource {
             'firstname' => $this->firstname,
             'lastname' => $this->lastname,
             'email' => $this->email,
-            'password' => Hash::make($this->password),
             'department' => $this->department,
             'function' => $this->function,
             'still_working' => $this->still_working,
+            'email_verified_at' => $this->email_verified_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
 
-            'role_id' => $this->role_id,
-            'profile' => $this->profile,
-
-            'role' => new RoleResource($this->whenLoaded('role')),
             'profile' => new ImageResource($this->whenLoaded('profile')),
+            'roles' => $this->whenLoaded('roles', fn () => $this->roles->pluck('name')),
+            'permissions' => $this->whenLoaded('permissions', fn () => $this->permissions->pluck('name')),
         ];
     }
 }

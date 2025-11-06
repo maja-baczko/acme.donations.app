@@ -13,22 +13,22 @@ class CampaignFactory extends Factory {
 
     public function definition(): array {
         return [
-            'title' => $this->faker->word(),
+            'title' => $this->faker->sentence(3),
             'slug' => $this->faker->slug(),
-            'description' => $this->faker->text(),
-            'goal_amount' => $this->faker->randomFloat(),
-            'current_amount' => $this->faker->randomFloat(),
-            'status' => $this->faker->word(),
+            'description' => $this->faker->paragraphs(3, true),
+            'goal_amount' => $this->faker->randomFloat(2, 1000, 100000),
+            'current_amount' => $this->faker->randomFloat(2, 0, 50000),
+            'status' => $this->faker->randomElement(['draft', 'active', 'completed', 'cancelled']),
             'start_date' => Carbon::now(),
-            'end_date' => Carbon::now(),
-            'beneficiary_name' => $this->faker->name(),
-            'beneficiary_website' => $this->faker->word(),
-            'featured' => $this->faker->boolean(),
+            'end_date' => Carbon::now()->addMonths(3),
+            'beneficiary_name' => $this->faker->company(),
+            'beneficiary_website' => $this->faker->url(),
+            'featured' => $this->faker->boolean(20), // 20% chance of being featured
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
 
             'creator_id' => User::factory(),
-            'category_id' => Category::factory(),
+            'category_id' => Category::inRandomOrder()->first()?->id ?? Category::first()?->id,
         ];
     }
 }

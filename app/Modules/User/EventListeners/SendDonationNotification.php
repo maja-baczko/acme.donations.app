@@ -2,11 +2,16 @@
 
 namespace App\Modules\User\EventListeners;
 
-use App\Modules\Donation\EventListeners\DonationStatusEvent;
+use App\Modules\Donation\Events\DonationStatusEvent;
 
 class SendDonationNotification {
     public function __construct() {}
 
-    // completed or failed
-    public function handle(DonationStatusEvent $event): void {}
+    public function handleCompleted(DonationStatusEvent $event): void {
+        // Send notification for completed donation
+    }
+
+    public function handleFailed(DonationStatusEvent $event): void {
+        // Send notification for failed donation
+    }
 }
