@@ -11,6 +11,12 @@ class SystemSettingController {
         return SystemSettingResource::collection(SystemSetting::all());
     }
 
+    public function public() {
+        return SystemSettingResource::collection(
+            SystemSetting::where('is_public', true)->get()
+        );
+    }
+
     public function create(Request $request) {
         $data = $request->validate([
             'key' => ['required'],
